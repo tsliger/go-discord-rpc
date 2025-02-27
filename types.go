@@ -18,11 +18,18 @@ type internalArgs struct {
 }
 
 type ActivityData struct {
-	State      string            `json:"state,omitempty"`
-	Type       int               `json:"type,omitempty"`
-	Details    string            `json:"details,omitempty"`
-	Timestamps ActivityTimestamp `json:"timestamps,omitempty"`
-	Assets     ActivityAssets    `json:"assets,omitempty"`
+	Type          int               `json:"type,omitempty"`
+	Url           string            `json:"url,omitempty"`
+	Timestamps    ActivityTimestamp `json:"timestamps,omitempty"`
+	ApplicationId string            `json:"application_id,omitempty"`
+	Details       string            `json:"details,omitempty"`
+	State         string            `json:"state,omitempty"`
+	Emoji         ActivityEmoji     `json:"emoji,omitempty"`
+	Party         ActivityParty     `json:"party,omitempty"`
+	Assets        ActivityAssets    `json:"assets,omitempty"`
+	Secrets       ActivitySecrets   `json:"secrets,omitempty"`
+	Instance      bool              `json:"instance,omitempty"`
+	Buttons       []ActivityButton  `json:"buttons,omitempty"`
 }
 
 type ActivityTimestamp struct {
@@ -37,5 +44,24 @@ type ActivityAssets struct {
 	SmallText  string `json:"small_text,omitempty"`
 }
 
-type ActivityButtons struct {
+type ActivityButton struct {
+	Label string `json:"label,omitempty"`
+	Url   string `json:"url,omitempty"`
+}
+
+type ActivityEmoji struct {
+	Name     string `json:"name,omitempty"`
+	Id       string `json:"id,omitempty"`
+	Animated bool   `json:"animated,omitempty"`
+}
+
+type ActivityParty struct {
+	Id   string `json:"id,omitempty"`
+	Size []int  `json:"size,omitempty"`
+}
+
+type ActivitySecrets struct {
+	Join     string `json:"join,omitempty"`
+	Spectate string `json:"spectate,omitempty"`
+	Match    string `json:"match,omitempty"`
 }

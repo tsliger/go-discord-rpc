@@ -68,6 +68,31 @@ func SendActivity(conn net.Conn, data ActivityData) error {
 	return nil
 }
 
+func receiveResponse(conn net.Conn) (uint32, map[string]interface{}, error) {
+	header := make([]byte, 8)
+	_, err := conn.Read(header)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	op := binary.LittleEndian.Uint32(header[:4])
+	length := binary.LittleEndian.Uint32(header[4:])
+
+	data := make([]byte, length)
+	_, err = conn.Read(data)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	var payload map[string]interface{}
+	err = json.Unmarshal(data, &payload)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	return op, payload, nil
+}
+
 func sendHandshake(conn net.Conn, appId string) error {
 	msg := handshake{
 		V:        1,

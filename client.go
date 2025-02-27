@@ -2,37 +2,10 @@ package main
 
 import (
 	"bufio"
-	"encoding/binary"
-	"encoding/json"
 	"fmt"
 	"net"
 	"os"
 )
-
-func receiveResponse(conn net.Conn) (uint32, map[string]interface{}, error) {
-	header := make([]byte, 8)
-	_, err := conn.Read(header)
-	if err != nil {
-		return 0, nil, err
-	}
-
-	op := binary.LittleEndian.Uint32(header[:4])
-	length := binary.LittleEndian.Uint32(header[4:])
-
-	data := make([]byte, length)
-	_, err = conn.Read(data)
-	if err != nil {
-		return 0, nil, err
-	}
-
-	var payload map[string]interface{}
-	err = json.Unmarshal(data, &payload)
-	if err != nil {
-		return 0, nil, err
-	}
-
-	return op, payload, nil
-}
 
 func NewClient(appId string) (net.Conn, error) {
 	socket, err := getDiscordSocket()
@@ -67,20 +40,42 @@ func CloseClient() {
 func main() {
 	conn, err := NewClient("1332158263432708146")
 
+	// data := ActivityData{
+	// 	State:      "t",
+	// 	Type:       2,
+	// 	Details:    "D",
+	// 	Timestamps: ActivityTimestamp{
+	// 		// Start: int(time.Now().Unix()),
+	// 		// Start: 1,
+	// 	},
+	// 	Assets: ActivityAssets{
+	// 		LargeText:  "M",
+	// 		LargeImage: "https://i.ytimg.com/vi/jlRmgQ7VXgA/sddefault.jpg",
+	// 		SmallText:  "M",
+	// 		SmallImage: "https://i.ytimg.com/vi/jlRmgQ7VXgA/sddefault.jpg",
+	// 	},
+	// }
+	//
 	data := ActivityData{
-		State:      "t",
-		Type:       2,
-		Details:    "D",
-		Timestamps: ActivityTimestamp{
-			// Start: int(time.Now().Unix()),
-			// Start: 1,
-		},
-		Assets: ActivityAssets{
-			LargeText:  "M",
-			LargeImage: "https://i.ytimg.com/vi/jlRmgQ7VXgA/sddefault.jpg",
-			SmallText:  "M",
-			SmallImage: "https://i.ytimg.com/vi/jlRmgQ7VXgA/sddefault.jpg",
-		},
+		State:   "test",
+		Type:    2,
+		Details: "Dest",
+		// Assets: ActivityAssets{
+		// 	LargeText:  "M",
+		// 	LargeImage: "https://i.ytimg.com/vi/jlRmgQ7VXgA/sddefault.jpg",
+		// 	SmallText:  "M",
+		// 	SmallImage: "https://i.ytimg.com/vi/jlRmgQ7VXgA/sddefault.jpg",
+		// },
+		// Buttons: []ActivityButton{
+		// 	{
+		// 		Label: "Test",
+		// 		Url:   "https://www.google.com/",
+		// 	},
+		// },
+		// Party: ActivityParty{
+		// 	Id:   "test",
+		// 	Size: []int{1, 2},
+		// },
 	}
 
 	err = SendActivity(conn, data)
