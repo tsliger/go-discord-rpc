@@ -1,6 +1,5 @@
 package discordrpc
 
-// Activity types
 const PLAYING_TYPE = 0
 const STREAMING_TYPE = 1
 const LISTENTING_TYPE = 2
@@ -20,9 +19,9 @@ type internalActivity struct {
 }
 
 type internalArgs struct {
-	Pid      int          `json:"pid"`
-	Activity ActivityData `json:"activity"`
-	Nonce    string       `json:"nonce"`
+	Pid      int           `json:"pid"`
+	Activity *ActivityData `json:"activity"`
+	Nonce    string        `json:"nonce"`
 }
 
 type ActivityData struct {
@@ -41,8 +40,8 @@ type ActivityData struct {
 }
 
 type ActivityTimestamp struct {
-	Start int `json:"start,omitempty"`
-	End   int `json:"end,omitempty"`
+	Start int64 `json:"start,omitempty"`
+	End   int64 `json:"end,omitempty"`
 }
 
 type ActivityAssets struct {

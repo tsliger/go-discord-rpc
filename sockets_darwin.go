@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-// Get socket from var directory.
+// Get Discord socket.
 func getDiscordSocket() (string, error) {
 	pattern := "/var/folders/*/*/*/discord-ipc-0"
 	matches, err := filepath.Glob(pattern)
@@ -23,7 +23,7 @@ func getDiscordSocket() (string, error) {
 	return "", nil // Return empty string if no match is found
 }
 
-// Form connection to the socket.
+// Connects to Discord socket.
 func connectToSocket(sock string) (net.Conn, error) {
 	conn, err := net.Dial("unix", sock)
 

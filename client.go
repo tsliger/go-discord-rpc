@@ -10,6 +10,7 @@ type Client struct {
 	conn net.Conn
 }
 
+// Creates new client
 func NewClient(appId string) (*Client, error) {
 	socket, err := getDiscordSocket()
 
@@ -35,6 +36,7 @@ func NewClient(appId string) (*Client, error) {
 	return &Client{id: appId, conn: conn}, nil
 }
 
+// Closes client connection.
 func (c *Client) CloseClient() error {
 	if c.conn != nil {
 		err := c.conn.Close()

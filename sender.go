@@ -7,13 +7,11 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"time"
 )
 
+// Sends data to Discord in proper format.
 func sendOperation(conn net.Conn, op uint32, payload interface{}) error {
-	if payload == nil {
-		payload = map[string]interface{}{}
-	}
-
 	data, err := json.Marshal(payload)
 	if err != nil {
 		return err
@@ -34,56 +32,46 @@ func sendOperation(conn net.Conn, op uint32, payload interface{}) error {
 	return nil
 }
 
-// func (c *Client) SendActivity(data ActivityData) error {
-func (c *Client) SendActivity(data interface{}) error {
+// Send updated activity data.
+func (c *Client) SendActivity(activityData *ActivityData) error {
 	// Pad fields below with a space character, when setting these
 	// to a string length of one it fails to display in discord.
-	if data == nil {
-		err := sendOperation(c.conn, 1, nil) // `nil` will send an empty payload
-		if err != nil {
-			return err
-		}
-
-		return nil
+	if len(activityData.Details) == 1 {
+		activityData.Details += " "
 	}
 
-	if activityData, ok := data.(ActivityData); ok {
-		if len(activityData.Details) == 1 {
-			activityData.Details += " "
-		}
+	if len(activityData.State) == 1 {
+		activityData.State += " "
+	}
 
-		if len(activityData.State) == 1 {
-			activityData.State += " "
-		}
+	if len(activityData.Assets.LargeText) == 1 {
+		activityData.Assets.LargeText += " "
+	}
 
-		if len(activityData.Assets.LargeText) == 1 {
-			activityData.Assets.LargeText += " "
-		}
+	if len(activityData.Assets.SmallText) == 1 {
+		activityData.Assets.SmallText += " "
+	}
 
-		if len(activityData.Assets.SmallText) == 1 {
-			activityData.Assets.SmallText += " "
-		}
+	activity := internalActivity{
+		Cmd: "SET_ACTIVITY",
+		Args: internalArgs{
+			Pid:      os.Getpid(),
+			Activity: activityData,
+		},
+		Nonce: fmt.Sprintf("clear_activity_%d", time.Now().UnixNano()),
+	}
 
-		activity := internalActivity{
-			Cmd: "SET_ACTIVITY",
-			Args: internalArgs{
-				Pid:      os.Getpid(),
-				Activity: activityData,
-			},
-			Nonce: "1234",
-		}
+	err := sendOperation(c.conn, 1, activity)
 
-		err := sendOperation(c.conn, 1, activity)
-
-		if err != nil {
-			fmt.Println("Failed to send operation")
-			return err
-		}
+	if err != nil {
+		fmt.Println("Failed to send operation")
+		return err
 	}
 
 	return nil
 }
 
+// Receive response back from handshake.
 func receiveResponse(conn net.Conn) (uint32, map[string]interface{}, error) {
 	header := make([]byte, 8)
 	_, err := conn.Read(header)
@@ -109,6 +97,7 @@ func receiveResponse(conn net.Conn) (uint32, map[string]interface{}, error) {
 	return op, payload, nil
 }
 
+// Initialize the connection.
 func sendHandshake(conn net.Conn, appId string) error {
 	msg := handshake{
 		V:        1,
