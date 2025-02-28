@@ -27,11 +27,10 @@ func NewClient(appId string) (*Client, error) {
 		return nil, fmt.Errorf("Failed to send initial handshake: %v", err)
 	}
 
-	op, payload, err := receiveResponse(conn)
+	_, _, err = receiveResponse(conn)
 	if err != nil {
 		return nil, fmt.Errorf("Response not receieved from initial handshake: %v", err)
 	}
-	fmt.Println(op, payload)
 
 	return &Client{id: appId, conn: conn}, nil
 }
