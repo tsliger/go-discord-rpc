@@ -1,4 +1,4 @@
-package main
+package discordrpc
 
 import (
 	"bytes"
@@ -9,6 +9,7 @@ import (
 	"os"
 )
 
+// Transform data and send to Discord.
 func sendOperation(conn net.Conn, op uint32, payload interface{}) error {
 	data, err := json.Marshal(payload)
 	if err != nil {
@@ -30,7 +31,8 @@ func sendOperation(conn net.Conn, op uint32, payload interface{}) error {
 	return nil
 }
 
-func SendActivity(conn net.Conn, data ActivityData) error {
+// Sends activity data to Discord for displaying.
+func SendActivity(data ActivityData) error {
 	// Pad fields below with a space character, when setting these
 	// to a string length of one it fails to display in discord.
 	if len(data.Details) == 1 {
@@ -68,6 +70,7 @@ func SendActivity(conn net.Conn, data ActivityData) error {
 	return nil
 }
 
+// Receive response from initial handshake.
 func receiveResponse(conn net.Conn) (uint32, map[string]interface{}, error) {
 	header := make([]byte, 8)
 	_, err := conn.Read(header)
@@ -93,6 +96,7 @@ func receiveResponse(conn net.Conn) (uint32, map[string]interface{}, error) {
 	return op, payload, nil
 }
 
+// Send handshake to initialize Discord activity API.
 func sendHandshake(conn net.Conn, appId string) error {
 	msg := handshake{
 		V:        1,

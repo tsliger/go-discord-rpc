@@ -1,4 +1,12 @@
-package main
+package discordrpc
+
+// Activity types
+const PLAYING_TYPE = 0
+const STREAMING_TYPE = 1
+const LISTENTING_TYPE = 2
+const WATCHING_TYPE = 3
+const CUSTOM_TYPE = 4
+const COMPETING_TYPE = 5
 
 type handshake struct {
 	V        int64  `json:"v"`

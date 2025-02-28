@@ -1,4 +1,5 @@
-package main
+// Apple Darwin specific socket implementation
+package discordrpc
 
 import (
 	"fmt"
@@ -6,6 +7,7 @@ import (
 	"path/filepath"
 )
 
+// Get socket from var directory.
 func getDiscordSocket() (string, error) {
 	pattern := "/var/folders/*/*/*/discord-ipc-0"
 	matches, err := filepath.Glob(pattern)
@@ -21,6 +23,7 @@ func getDiscordSocket() (string, error) {
 	return "", nil // Return empty string if no match is found
 }
 
+// Form connection to the socket.
 func connectToSocket(sock string) (net.Conn, error) {
 	conn, err := net.Dial("unix", sock)
 
