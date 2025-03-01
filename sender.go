@@ -35,14 +35,9 @@ func sendOperation(conn net.Conn, op uint32, payload interface{}) error {
 
 // Function to match arg type on official Discord docs.
 func (c *Client) SetActivity(activityData *ActivityData) error {
-	// Check for connection being nil
-	if !isDiscordRunning() {
-		if c.conn != nil {
-			c.conn.Close()
-		}
-		c.conn = nil
-		return errors.New("Discord closed.")
-	} else {
+	err := c.sendActivity(activityData)
+
+	if err != nil {
 		err := c.reconnect()
 
 		if err != nil {
@@ -50,13 +45,15 @@ func (c *Client) SetActivity(activityData *ActivityData) error {
 		}
 	}
 
-	c.sendActivity(activityData)
-
 	return nil
 }
 
 // Send updated activity data.
 func (c *Client) sendActivity(activityData *ActivityData) error {
+	if c.conn == nil {
+		return errors.New("Cannot connect to socket.")
+	}
+
 	// Pad fields below with a space character, when setting these
 	// to a string length of one it fails to display in discord.
 	if len(activityData.Details) == 1 {

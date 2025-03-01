@@ -8,6 +8,11 @@ import (
 // Creates new client
 func NewClient(appId string) (*Client, error) {
 	appClient := &Client{id: appId, conn: nil}
+
+	if !isDiscordRunning() {
+		return appClient, nil
+	}
+
 	conn, err := createConnection()
 
 	if err != nil {
@@ -56,6 +61,10 @@ func initializeClient(conn net.Conn, appId string) error {
 
 // Reconnects client to socket when Discord closes and reopens.
 func (c *Client) reconnect() error {
+	if c.conn != nil {
+		c.conn.Close()
+	}
+
 	conn, err := createConnection()
 
 	if err != nil {
