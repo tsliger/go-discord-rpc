@@ -1,11 +1,18 @@
 package discordrpc
 
+import "net"
+
 const PLAYING_TYPE = 0
 const STREAMING_TYPE = 1
 const LISTENTING_TYPE = 2
 const WATCHING_TYPE = 3
 const CUSTOM_TYPE = 4
 const COMPETING_TYPE = 5
+
+type Client struct {
+	id   string
+	conn net.Conn
+}
 
 type handshake struct {
 	V        int64  `json:"v"`

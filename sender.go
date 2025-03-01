@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -32,8 +33,30 @@ func sendOperation(conn net.Conn, op uint32, payload interface{}) error {
 	return nil
 }
 
+// Function to match arg type on official Discord docs.
+func (c *Client) SetActivity(activityData *ActivityData) error {
+	// Check for connection being nil
+	if !isDiscordRunning() {
+		if c.conn != nil {
+			c.conn.Close()
+		}
+		c.conn = nil
+		return errors.New("Discord closed.")
+	} else {
+		err := c.reconnect()
+
+		if err != nil {
+			return err
+		}
+	}
+
+	c.sendActivity(activityData)
+
+	return nil
+}
+
 // Send updated activity data.
-func (c *Client) SendActivity(activityData *ActivityData) error {
+func (c *Client) sendActivity(activityData *ActivityData) error {
 	// Pad fields below with a space character, when setting these
 	// to a string length of one it fails to display in discord.
 	if len(activityData.Details) == 1 {
@@ -64,7 +87,6 @@ func (c *Client) SendActivity(activityData *ActivityData) error {
 	err := sendOperation(c.conn, 1, activity)
 
 	if err != nil {
-		fmt.Println("Failed to send operation")
 		return err
 	}
 
