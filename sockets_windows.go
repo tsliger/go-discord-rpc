@@ -4,7 +4,7 @@ package discordrpc
 import (
 	"fmt"
 	"net"
-	"path/filepath"
+	"github.com/Microsoft/go-winio"
 )
 
 const pipeName = `\\.\pipe\discord-ipc-0`
