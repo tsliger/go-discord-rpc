@@ -3,6 +3,7 @@ module github.com/tsliger/go-discord-rpc
 go 1.23.1
 
 require (
+	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/ebitengine/purego v0.8.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 // indirect
