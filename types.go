@@ -32,6 +32,7 @@ type internalArgs struct {
 }
 
 type ActivityData struct {
+	Name          string            `json:"name,omitempty"`
 	Type          int               `json:"type,omitempty"`
 	Url           string            `json:"url,omitempty"`
 	Timestamps    ActivityTimestamp `json:"timestamps,omitempty"`
@@ -54,8 +55,10 @@ type ActivityTimestamp struct {
 type ActivityAssets struct {
 	LargeImage string `json:"large_image,omitempty"`
 	LargeText  string `json:"large_text,omitempty"`
+	LargeUrl   string `json:"large_url,omitempty"`
 	SmallImage string `json:"small_image,omitempty"`
 	SmallText  string `json:"small_text,omitempty"`
+	SmallUrl   string `json:"small_url,omitempty"`
 }
 
 type ActivityButton struct {
